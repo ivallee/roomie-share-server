@@ -2,6 +2,7 @@
 type Query {
   allUsers: [User!]!
   allGroups: [Group!]!
+  getUserById(userId: String!): User!
 }
 
 type User {
