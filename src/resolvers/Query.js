@@ -8,6 +8,12 @@ function getUserById(parent, args, ctx, info) {
   return ctx.db.query.user({ where: { id: userId } }, info);
 }
 
+function getUserByEmail(parent, args, ctx, info) {
+  const { email } = args;
+
+  return ctx.db.query.user({ where: { email } }, info);
+}
+
 function allGroups(parent, args, ctx, info) {
   return ctx.db.query.groups({}, info);
 }
@@ -15,5 +21,6 @@ function allGroups(parent, args, ctx, info) {
 module.exports = {
   allUsers,
   allGroups,
-  getUserById
+  getUserById,
+  getUserByEmail
 }

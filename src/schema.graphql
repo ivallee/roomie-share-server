@@ -3,6 +3,16 @@ type Query {
   allUsers: [User!]!
   allGroups: [Group!]!
   getUserById(userId: String!): User!
+  getUserByEmail(email: String!): User!
+}
+
+type Mutation {
+  signup(email: String! password: String! name: String!): AuthPayload
+}
+
+type AuthPayload {
+  token: String
+  user: User
 }
 
 type User {
