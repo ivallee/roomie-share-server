@@ -3,12 +3,13 @@ type User {
   name: String!
   email: String! @unique
   password: String!
-  # groups: [Group!]!
+  groups: [Group!]!
   # balance
 }
 
 type Group {
   id: ID! @unique
   name: String!
+  users: [User!]! 
   # expenses: [Expense!]!
 }

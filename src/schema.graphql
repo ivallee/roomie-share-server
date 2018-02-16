@@ -1,5 +1,18 @@
-# import User from "./generated/prisma.graphql"
 
 type Query {
   allUsers: [User!]!
+  allGroups: [Group!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  groups: [Group!]!
+}
+
+type Group {
+  id: ID!
+  name: String!
+  users: [User!]!
 }
