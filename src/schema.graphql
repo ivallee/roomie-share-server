@@ -29,4 +29,5 @@ type Group {
   id: ID!
   name: String!
   users: [User!]!
+  createdBy: User!
 }
