@@ -11,6 +11,7 @@ type Mutation {
   signup(email: String! password: String! name: String!): AuthPayload
   login(email: String! password: String!): AuthPayload
   newGroup(name: String!): Group!
+  addToGroup(email: String!): Group!
 }
 
 type AuthPayload {

@@ -39,12 +39,13 @@ async function login(parent, args, ctx, info) {
 
 function newGroup(parent, args, ctx, info) {
   const { name } = args;
-  const userId = getUserId(ctx);
+  const id = getUserId(ctx);
 
   return ctx.db.mutation.createGroup({
     data: {
       name,
-      createdBy: { connect: { id: userId } }
+      users: { connect: { id } },
+      createdBy: { connect: { id } }
     }
   },
     info
