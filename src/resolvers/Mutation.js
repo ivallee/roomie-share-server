@@ -80,13 +80,43 @@ async function addToGroup(parent, args, ctx, info) {
   )
 }
 
+async function removeFromGroup(parent, args, ctx, info) {
+  const { email, groupId } = args;
+  // TODO Change this system
+  const userId = getUserId(ctx);
+  const group = await ctx.db.exists.Group({ 
+    id: groupId,
+    createdBy: { 
+      id: userId
+     }
+  })
+
+  // TODO
+  // add check to see if user is settled up before being able to leave
+
+  // verify that user is group creator
+  if (!group) {
+    throw new Error('Only group creators may remove users');
+  }
+
+  return ctx.db.mutation.updateGroup({
+    where: { id: groupId },
+    data: {
+      users: { disconnect: { email } }
+    }
+  },
+    info
+  )
+}
+
 async function leaveGroup(parent, args, ctx, info) {
   const { groupId } = args;
   // TODO Change this system
   const id = getUserId(ctx);
   const user = await ctx.db.query.user({ where: { id } }, '{id groups { id }}');
 
-
+  // TODO
+  // add check to see if user is settled up before being able to leave
   return ctx.db.mutation.updateGroup({
     where: { id: groupId },
     data: {
@@ -102,5 +132,6 @@ module.exports = {
   login,
   newGroup,
   addToGroup,
+  removeFromGroup,
   leaveGroup
 }
