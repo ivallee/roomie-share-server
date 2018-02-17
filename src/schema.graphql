@@ -1,5 +1,6 @@
 
 type Query {
+  # do I need these?
   allUsers: [User!]!
   allGroups: [Group!]!
   getUserById(userId: String!): User!
@@ -9,6 +10,7 @@ type Query {
 type Mutation {
   signup(email: String! password: String! name: String!): AuthPayload
   login(email: String! password: String!): AuthPayload
+  newGroup(name: String!): Group!
 }
 
 type AuthPayload {

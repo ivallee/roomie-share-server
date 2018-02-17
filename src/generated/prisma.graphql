@@ -9,6 +9,7 @@ type Group implements Node {
   id: ID!
   name: String!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  createdBy(where: UserWhereInput): User!
 }
 
 type User implements Node {
@@ -17,6 +18,7 @@ type User implements Node {
   email: String!
   password: String!
   groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group!]
+  groupsCreated(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group!]
 }
 
 
@@ -45,6 +47,12 @@ type GroupConnection {
 input GroupCreateInput {
   name: String!
   users: UserCreateManyWithoutGroupsInput
+  createdBy: UserCreateOneWithoutGroupsCreatedInput!
+}
+
+input GroupCreateManyWithoutCreatedByInput {
+  create: [GroupCreateWithoutCreatedByInput!]
+  connect: [GroupWhereUniqueInput!]
 }
 
 input GroupCreateManyWithoutUsersInput {
@@ -52,8 +60,14 @@ input GroupCreateManyWithoutUsersInput {
   connect: [GroupWhereUniqueInput!]
 }
 
+input GroupCreateWithoutCreatedByInput {
+  name: String!
+  users: UserCreateManyWithoutGroupsInput
+}
+
 input GroupCreateWithoutUsersInput {
   name: String!
+  createdBy: UserCreateOneWithoutGroupsCreatedInput!
 }
 
 type GroupEdge {
@@ -97,6 +111,16 @@ input GroupSubscriptionWhereInput {
 input GroupUpdateInput {
   name: String
   users: UserUpdateManyWithoutGroupsInput
+  createdBy: UserUpdateOneWithoutGroupsCreatedInput
+}
+
+input GroupUpdateManyWithoutCreatedByInput {
+  create: [GroupCreateWithoutCreatedByInput!]
+  connect: [GroupWhereUniqueInput!]
+  disconnect: [GroupWhereUniqueInput!]
+  delete: [GroupWhereUniqueInput!]
+  update: [GroupUpdateWithoutCreatedByInput!]
+  upsert: [GroupUpsertWithoutCreatedByInput!]
 }
 
 input GroupUpdateManyWithoutUsersInput {
@@ -108,13 +132,30 @@ input GroupUpdateManyWithoutUsersInput {
   upsert: [GroupUpsertWithoutUsersInput!]
 }
 
+input GroupUpdateWithoutCreatedByDataInput {
+  name: String
+  users: UserUpdateManyWithoutGroupsInput
+}
+
+input GroupUpdateWithoutCreatedByInput {
+  where: GroupWhereUniqueInput!
+  data: GroupUpdateWithoutCreatedByDataInput!
+}
+
 input GroupUpdateWithoutUsersDataInput {
   name: String
+  createdBy: UserUpdateOneWithoutGroupsCreatedInput
 }
 
 input GroupUpdateWithoutUsersInput {
   where: GroupWhereUniqueInput!
   data: GroupUpdateWithoutUsersDataInput!
+}
+
+input GroupUpsertWithoutCreatedByInput {
+  where: GroupWhereUniqueInput!
+  update: GroupUpdateWithoutCreatedByDataInput!
+  create: GroupCreateWithoutCreatedByInput!
 }
 
 input GroupUpsertWithoutUsersInput {
@@ -157,6 +198,7 @@ input GroupWhereInput {
   users_every: UserWhereInput
   users_some: UserWhereInput
   users_none: UserWhereInput
+  createdBy: UserWhereInput
 }
 
 input GroupWhereUniqueInput {
@@ -223,6 +265,7 @@ input UserCreateInput {
   email: String!
   password: String!
   groups: GroupCreateManyWithoutUsersInput
+  groupsCreated: GroupCreateManyWithoutCreatedByInput
 }
 
 input UserCreateManyWithoutGroupsInput {
@@ -230,10 +273,23 @@ input UserCreateManyWithoutGroupsInput {
   connect: [UserWhereUniqueInput!]
 }
 
+input UserCreateOneWithoutGroupsCreatedInput {
+  create: UserCreateWithoutGroupsCreatedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutGroupsCreatedInput {
+  name: String!
+  email: String!
+  password: String!
+  groups: GroupCreateManyWithoutUsersInput
+}
+
 input UserCreateWithoutGroupsInput {
   name: String!
   email: String!
   password: String!
+  groupsCreated: GroupCreateManyWithoutCreatedByInput
 }
 
 type UserEdge {
@@ -285,6 +341,7 @@ input UserUpdateInput {
   email: String
   password: String
   groups: GroupUpdateManyWithoutUsersInput
+  groupsCreated: GroupUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateManyWithoutGroupsInput {
@@ -296,15 +353,43 @@ input UserUpdateManyWithoutGroupsInput {
   upsert: [UserUpsertWithoutGroupsInput!]
 }
 
+input UserUpdateOneWithoutGroupsCreatedInput {
+  create: UserCreateWithoutGroupsCreatedInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  delete: UserWhereUniqueInput
+  update: UserUpdateWithoutGroupsCreatedInput
+  upsert: UserUpsertWithoutGroupsCreatedInput
+}
+
+input UserUpdateWithoutGroupsCreatedDataInput {
+  name: String
+  email: String
+  password: String
+  groups: GroupUpdateManyWithoutUsersInput
+}
+
+input UserUpdateWithoutGroupsCreatedInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutGroupsCreatedDataInput!
+}
+
 input UserUpdateWithoutGroupsDataInput {
   name: String
   email: String
   password: String
+  groupsCreated: GroupUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateWithoutGroupsInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutGroupsDataInput!
+}
+
+input UserUpsertWithoutGroupsCreatedInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutGroupsCreatedDataInput!
+  create: UserCreateWithoutGroupsCreatedInput!
 }
 
 input UserUpsertWithoutGroupsInput {
@@ -375,6 +460,9 @@ input UserWhereInput {
   groups_every: GroupWhereInput
   groups_some: GroupWhereInput
   groups_none: GroupWhereInput
+  groupsCreated_every: GroupWhereInput
+  groupsCreated_some: GroupWhereInput
+  groupsCreated_none: GroupWhereInput
 }
 
 input UserWhereUniqueInput {

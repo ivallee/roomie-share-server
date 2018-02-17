@@ -3,13 +3,14 @@ type User {
   name: String!
   email: String! @unique
   password: String!
-  groups: [Group!]!
+  groups: [Group!]! @relation(name: "GroupMember")
+  groupsCreated: [Group!]! @relation(name: "GroupCreator")
   # balance
 }
 
 type Group {
   id: ID! @unique
   name: String!
-  users: [User!]! 
-  # expenses: [Expense!]!
+  users: [User!]! @relation(name: "GroupMember")
+  createdBy: User! @relation(name: "GroupCreator")
 }

@@ -9,7 +9,7 @@ async function signup(parent, args, ctx, info) {
     data: { ...args, password }
   });
 
-  const token = jwt.sign({ userId: user.id}, process.env.APP_SECRET);
+  const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
 
   return {
     token,
@@ -35,6 +35,10 @@ async function login(parent, args, ctx, info) {
     token,
     user,
   }
+}
+
+async function newGroup(parent, args, ctx, info) {
+  // get userId
 }
 
 module.exports = {
