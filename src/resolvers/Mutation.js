@@ -52,8 +52,33 @@ function newGroup(parent, args, ctx, info) {
   )
 }
 
+async function addToGroup(parent, args, ctx, info) {
+  const { email, groupId } = args;
+  const authorized = getUserId(ctx);
+  const user = await ctx.db.query.user({ where: { email } });
+  const groupExists = await ctx.db.exists.Group({ id: groupId });
+
+  if (!id) {
+    throw new Error(`Could not find user with Email: ${email}`);
+  }
+  if (!groupExists) {
+    throw new Error(`Could not find group with ID: ${groupId}`);
+  }
+
+  // TODO turn into invite? add notification for added user?
+  return ctx.db.mutation.updateGroup({
+    where: { id: groupId },
+    data: {
+      users: { connect: { id: user.id } }
+    }
+  },
+    info
+  )
+}
+
 module.exports = {
   signup,
   login,
-  newGroup
+  newGroup,
+  addToGroup
 }
