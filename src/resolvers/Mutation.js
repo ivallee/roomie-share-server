@@ -54,6 +54,7 @@ function newGroup(parent, args, ctx, info) {
 
 async function addToGroup(parent, args, ctx, info) {
   const { email, groupId } = args;
+  // TODO Change this system
   const authorized = getUserId(ctx);
   const user = await ctx.db.query.user({ where: { email }}, '{id groups { id }}' );
   const groupExists = await ctx.db.exists.Group({ id: groupId });
@@ -79,9 +80,27 @@ async function addToGroup(parent, args, ctx, info) {
   )
 }
 
+async function leaveGroup(parent, args, ctx, info) {
+  const { groupId } = args;
+  // TODO Change this system
+  const id = getUserId(ctx);
+  const user = await ctx.db.query.user({ where: { id } }, '{id groups { id }}');
+
+
+  return ctx.db.mutation.updateGroup({
+    where: { id: groupId },
+    data: {
+      users: { disconnect: { id: user.id } }
+    }
+  },
+    info
+  )
+}
+
 module.exports = {
   signup,
   login,
   newGroup,
-  addToGroup
+  addToGroup,
+  leaveGroup
 }

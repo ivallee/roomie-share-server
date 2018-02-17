@@ -12,6 +12,7 @@ type Mutation {
   login(email: String! password: String!): AuthPayload
   newGroup(name: String!): Group!
   addToGroup(email: String! groupId: String!): Group!
+  leaveGroup(groupId: String!): Group!
 }
 
 type AuthPayload {
