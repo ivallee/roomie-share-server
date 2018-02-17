@@ -55,14 +55,17 @@ function newGroup(parent, args, ctx, info) {
 async function addToGroup(parent, args, ctx, info) {
   const { email, groupId } = args;
   const authorized = getUserId(ctx);
-  const user = await ctx.db.query.user({ where: { email } });
+  const user = await ctx.db.query.user({ where: { email }}, '{id groups { id }}' );
   const groupExists = await ctx.db.exists.Group({ id: groupId });
 
-  if (!id) {
+  if (!user) {
     throw new Error(`Could not find user with Email: ${email}`);
   }
   if (!groupExists) {
     throw new Error(`Could not find group with ID: ${groupId}`);
+  }
+  if (user.groups.find(e => e.id === groupId)) {
+    throw new Error(`${email} is already a member of group: ${groupId}`);
   }
 
   // TODO turn into invite? add notification for added user?
