@@ -66,7 +66,7 @@ async function addToGroup(parent, args, ctx, info) {
     throw new Error(`Could not find group with ID: ${groupId}`);
   }
   if (user.groups.find(e => e.id === groupId)) {
-    throw new Error(`${email} is already a member of group: ${groupId}`);
+    throw new Error(`${email} is already a member of this group`);
   }
 
   // TODO turn into invite? add notification for added user?
@@ -89,7 +89,7 @@ async function removeFromGroup(parent, args, ctx, info) {
     createdBy: { 
       id: userId
      }
-  })
+  });
 
   // TODO
   // add check to see if user is settled up before being able to leave
