@@ -14,6 +14,12 @@ type Mutation {
   addToGroup(email: String! groupId: String!): Group!
   removeFromGroup(email: String! groupId: String!): Group!
   leaveGroup(groupId: String!): Group!
+  newExpense(
+    groupId: String!
+    amount: Int! 
+    description: String!
+    # sharedBy: [User!]!
+    ): Expense!
 }
 
 type AuthPayload {
@@ -33,4 +39,13 @@ type Group {
   name: String!
   users: [User!]!
   createdBy: User!
+}
+
+type Expense {
+  id: ID!
+  amount: Int!
+  description: String!
+  postedBy: User!
+  # sharedBy: [User!]!
+  group: Group!
 }
