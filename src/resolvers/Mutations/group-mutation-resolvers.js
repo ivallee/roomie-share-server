@@ -1,8 +1,8 @@
-const { getUserId } = require('../../utils');
+const { validateUser } = require('../../utils');
 
 function newGroup(parent, args, ctx, info) {
   const { name } = args;
-  const id = getUserId(ctx);
+  const id = validateUser(ctx);
 
   return ctx.db.mutation.createGroup({
     data: {
@@ -17,8 +17,7 @@ function newGroup(parent, args, ctx, info) {
 
 async function addToGroup(parent, args, ctx, info) {
   const { email, groupId } = args;
-  // TODO Change this system
-  const authorized = getUserId(ctx);
+  const authorized = validateUser(ctx);
   const user = await ctx.db.query.user({ where: { email } }, '{id groups { id }}');
   const groupExists = await ctx.db.exists.Group({ id: groupId });
 
@@ -45,8 +44,7 @@ async function addToGroup(parent, args, ctx, info) {
 
 async function removeFromGroup(parent, args, ctx, info) {
   const { email, groupId } = args;
-  // TODO Change this system
-  const userId = getUserId(ctx);
+  const userId = validateUser(ctx);
   const group = await ctx.db.exists.Group({
     id: groupId,
     createdBy: {
@@ -73,8 +71,7 @@ async function removeFromGroup(parent, args, ctx, info) {
 
 async function leaveGroup(parent, args, ctx, info) {
   const { groupId } = args;
-  // TODO Change this system
-  const id = getUserId(ctx);
+  const id = validateUser(ctx);
   const user = await ctx.db.query.user({ where: { id } }, '{id groups { id }}');
 
   // TODO

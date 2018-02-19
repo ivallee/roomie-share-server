@@ -1,9 +1,8 @@
 require('dotenv').config();
+const APP_SECRET = process.env.APP_SECRET;
 const jwt = require('jsonwebtoken');
 
-const APP_SECRET = process.env.APP_SECRET;
-
-function getUserId(context) {
+function validateUser(context) {
   const Authorization = context.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
@@ -16,5 +15,5 @@ function getUserId(context) {
 
 module.exports = {
   APP_SECRET,
-  getUserId
+  validateUser
 }
