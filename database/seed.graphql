@@ -1,7 +1,7 @@
 mutation {
   Isaac: createUser(data: {
-    name: "Isaac"
-    email: "isaac@example.com"
+    name: "Walker"
+    email: "walker@example.com"
     password: "1234"
   }) {
     id
