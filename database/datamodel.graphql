@@ -15,6 +15,7 @@ type Group {
   name: String!
   users: [User!]! @relation(name: "GroupMember")
   createdBy: User! @relation(name: "GroupCreator")
+  expenses: [Expense!]!
 }
 
 type Expense {
