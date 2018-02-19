@@ -6,8 +6,7 @@ type User {
   groups: [Group!]! @relation(name: "GroupMember")
   groupsCreated: [Group!]! @relation(name: "GroupCreator")
   expensesPaid: [Expense!]! @relation(name: "ExpensePayer")
-  expensesShared: [Expense_Share!]!
-  # balance
+  expensesShared: [ExpenseShare!]!
 }
 
 type Group {
@@ -23,12 +22,12 @@ type Expense {
   amount: Int!
   description: String!
   paidBy: User! @relation(name: "ExpensePayer")
-  participants: [Expense_Share!]!
+  participants: [ExpenseShare!]!
   group: Group!
-  perPerson: Int!
 }
 
-type Expense_Share {
+type ExpenseShare {
+  id: ID! @unique
   user: User!
   expense: Expense!
   share: Float!

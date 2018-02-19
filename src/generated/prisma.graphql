@@ -10,9 +10,15 @@ type Expense implements Node {
   amount: Int!
   description: String!
   paidBy(where: UserWhereInput): User!
-  participants(where: Expense_ShareWhereInput, orderBy: Expense_ShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Expense_Share!]
+  participants(where: ExpenseShareWhereInput, orderBy: ExpenseShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ExpenseShare!]
   group(where: GroupWhereInput): Group!
-  perPerson: Int!
+}
+
+type ExpenseShare implements Node {
+  id: ID!
+  user(where: UserWhereInput): User!
+  expense(where: ExpenseWhereInput): Expense!
+  share: Float!
 }
 
 type Group implements Node {
@@ -31,7 +37,7 @@ type User implements Node {
   groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group!]
   groupsCreated(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group!]
   expensesPaid(where: ExpenseWhereInput, orderBy: ExpenseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Expense!]
-  expensesShared(where: Expense_ShareWhereInput, orderBy: Expense_ShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Expense_Share!]
+  expensesShared(where: ExpenseShareWhereInput, orderBy: ExpenseShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ExpenseShare!]
 }
 
 
@@ -43,7 +49,7 @@ type AggregateExpense {
   count: Int!
 }
 
-type AggregateExpense_Share {
+type AggregateExpenseShare {
   count: Int!
 }
 
@@ -59,108 +65,6 @@ type BatchPayload {
   count: Long!
 }
 
-type Expense_Share {
-  user(where: UserWhereInput): User!
-  expense(where: ExpenseWhereInput): Expense!
-  share: Float!
-}
-
-type Expense_ShareConnection {
-  pageInfo: PageInfo!
-  edges: [Expense_ShareEdge]!
-  aggregate: AggregateExpense_Share!
-}
-
-input Expense_ShareCreateInput {
-  share: Float!
-  user: UserCreateOneWithoutExpensesSharedInput!
-  expense: ExpenseCreateOneWithoutParticipantsInput!
-}
-
-input Expense_ShareCreateManyWithoutExpenseInput {
-  create: [Expense_ShareCreateWithoutExpenseInput!]
-}
-
-input Expense_ShareCreateManyWithoutUserInput {
-  create: [Expense_ShareCreateWithoutUserInput!]
-}
-
-input Expense_ShareCreateWithoutExpenseInput {
-  share: Float!
-  user: UserCreateOneWithoutExpensesSharedInput!
-}
-
-input Expense_ShareCreateWithoutUserInput {
-  share: Float!
-  expense: ExpenseCreateOneWithoutParticipantsInput!
-}
-
-type Expense_ShareEdge {
-  node: Expense_Share!
-  cursor: String!
-}
-
-enum Expense_ShareOrderByInput {
-  share_ASC
-  share_DESC
-  id_ASC
-  id_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type Expense_SharePreviousValues {
-  share: Float!
-}
-
-type Expense_ShareSubscriptionPayload {
-  mutation: MutationType!
-  node: Expense_Share
-  updatedFields: [String!]
-  previousValues: Expense_SharePreviousValues
-}
-
-input Expense_ShareSubscriptionWhereInput {
-  AND: [Expense_ShareSubscriptionWhereInput!]
-  OR: [Expense_ShareSubscriptionWhereInput!]
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: Expense_ShareWhereInput
-}
-
-input Expense_ShareUpdateInput {
-  share: Float
-  user: UserUpdateOneWithoutExpensesSharedInput
-  expense: ExpenseUpdateOneWithoutParticipantsInput
-}
-
-input Expense_ShareUpdateManyWithoutExpenseInput {
-  create: [Expense_ShareCreateWithoutExpenseInput!]
-}
-
-input Expense_ShareUpdateManyWithoutUserInput {
-  create: [Expense_ShareCreateWithoutUserInput!]
-}
-
-input Expense_ShareWhereInput {
-  AND: [Expense_ShareWhereInput!]
-  OR: [Expense_ShareWhereInput!]
-  share: Float
-  share_not: Float
-  share_in: [Float!]
-  share_not_in: [Float!]
-  share_lt: Float
-  share_lte: Float
-  share_gt: Float
-  share_gte: Float
-  user: UserWhereInput
-  expense: ExpenseWhereInput
-}
-
 type ExpenseConnection {
   pageInfo: PageInfo!
   edges: [ExpenseEdge]!
@@ -170,9 +74,8 @@ type ExpenseConnection {
 input ExpenseCreateInput {
   amount: Int!
   description: String!
-  perPerson: Int!
   paidBy: UserCreateOneWithoutExpensesPaidInput!
-  participants: Expense_ShareCreateManyWithoutExpenseInput
+  participants: ExpenseShareCreateManyWithoutExpenseInput
   group: GroupCreateOneWithoutExpensesInput!
 }
 
@@ -194,23 +97,20 @@ input ExpenseCreateOneWithoutParticipantsInput {
 input ExpenseCreateWithoutGroupInput {
   amount: Int!
   description: String!
-  perPerson: Int!
   paidBy: UserCreateOneWithoutExpensesPaidInput!
-  participants: Expense_ShareCreateManyWithoutExpenseInput
+  participants: ExpenseShareCreateManyWithoutExpenseInput
 }
 
 input ExpenseCreateWithoutPaidByInput {
   amount: Int!
   description: String!
-  perPerson: Int!
-  participants: Expense_ShareCreateManyWithoutExpenseInput
+  participants: ExpenseShareCreateManyWithoutExpenseInput
   group: GroupCreateOneWithoutExpensesInput!
 }
 
 input ExpenseCreateWithoutParticipantsInput {
   amount: Int!
   description: String!
-  perPerson: Int!
   paidBy: UserCreateOneWithoutExpensesPaidInput!
   group: GroupCreateOneWithoutExpensesInput!
 }
@@ -227,8 +127,6 @@ enum ExpenseOrderByInput {
   amount_DESC
   description_ASC
   description_DESC
-  perPerson_ASC
-  perPerson_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -239,7 +137,165 @@ type ExpensePreviousValues {
   id: ID!
   amount: Int!
   description: String!
-  perPerson: Int!
+}
+
+type ExpenseShareConnection {
+  pageInfo: PageInfo!
+  edges: [ExpenseShareEdge]!
+  aggregate: AggregateExpenseShare!
+}
+
+input ExpenseShareCreateInput {
+  share: Float!
+  user: UserCreateOneWithoutExpensesSharedInput!
+  expense: ExpenseCreateOneWithoutParticipantsInput!
+}
+
+input ExpenseShareCreateManyWithoutExpenseInput {
+  create: [ExpenseShareCreateWithoutExpenseInput!]
+  connect: [ExpenseShareWhereUniqueInput!]
+}
+
+input ExpenseShareCreateManyWithoutUserInput {
+  create: [ExpenseShareCreateWithoutUserInput!]
+  connect: [ExpenseShareWhereUniqueInput!]
+}
+
+input ExpenseShareCreateWithoutExpenseInput {
+  share: Float!
+  user: UserCreateOneWithoutExpensesSharedInput!
+}
+
+input ExpenseShareCreateWithoutUserInput {
+  share: Float!
+  expense: ExpenseCreateOneWithoutParticipantsInput!
+}
+
+type ExpenseShareEdge {
+  node: ExpenseShare!
+  cursor: String!
+}
+
+enum ExpenseShareOrderByInput {
+  id_ASC
+  id_DESC
+  share_ASC
+  share_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type ExpenseSharePreviousValues {
+  id: ID!
+  share: Float!
+}
+
+type ExpenseShareSubscriptionPayload {
+  mutation: MutationType!
+  node: ExpenseShare
+  updatedFields: [String!]
+  previousValues: ExpenseSharePreviousValues
+}
+
+input ExpenseShareSubscriptionWhereInput {
+  AND: [ExpenseShareSubscriptionWhereInput!]
+  OR: [ExpenseShareSubscriptionWhereInput!]
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ExpenseShareWhereInput
+}
+
+input ExpenseShareUpdateInput {
+  share: Float
+  user: UserUpdateOneWithoutExpensesSharedInput
+  expense: ExpenseUpdateOneWithoutParticipantsInput
+}
+
+input ExpenseShareUpdateManyWithoutExpenseInput {
+  create: [ExpenseShareCreateWithoutExpenseInput!]
+  connect: [ExpenseShareWhereUniqueInput!]
+  disconnect: [ExpenseShareWhereUniqueInput!]
+  delete: [ExpenseShareWhereUniqueInput!]
+  update: [ExpenseShareUpdateWithoutExpenseInput!]
+  upsert: [ExpenseShareUpsertWithoutExpenseInput!]
+}
+
+input ExpenseShareUpdateManyWithoutUserInput {
+  create: [ExpenseShareCreateWithoutUserInput!]
+  connect: [ExpenseShareWhereUniqueInput!]
+  disconnect: [ExpenseShareWhereUniqueInput!]
+  delete: [ExpenseShareWhereUniqueInput!]
+  update: [ExpenseShareUpdateWithoutUserInput!]
+  upsert: [ExpenseShareUpsertWithoutUserInput!]
+}
+
+input ExpenseShareUpdateWithoutExpenseDataInput {
+  share: Float
+  user: UserUpdateOneWithoutExpensesSharedInput
+}
+
+input ExpenseShareUpdateWithoutExpenseInput {
+  where: ExpenseShareWhereUniqueInput!
+  data: ExpenseShareUpdateWithoutExpenseDataInput!
+}
+
+input ExpenseShareUpdateWithoutUserDataInput {
+  share: Float
+  expense: ExpenseUpdateOneWithoutParticipantsInput
+}
+
+input ExpenseShareUpdateWithoutUserInput {
+  where: ExpenseShareWhereUniqueInput!
+  data: ExpenseShareUpdateWithoutUserDataInput!
+}
+
+input ExpenseShareUpsertWithoutExpenseInput {
+  where: ExpenseShareWhereUniqueInput!
+  update: ExpenseShareUpdateWithoutExpenseDataInput!
+  create: ExpenseShareCreateWithoutExpenseInput!
+}
+
+input ExpenseShareUpsertWithoutUserInput {
+  where: ExpenseShareWhereUniqueInput!
+  update: ExpenseShareUpdateWithoutUserDataInput!
+  create: ExpenseShareCreateWithoutUserInput!
+}
+
+input ExpenseShareWhereInput {
+  AND: [ExpenseShareWhereInput!]
+  OR: [ExpenseShareWhereInput!]
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  share: Float
+  share_not: Float
+  share_in: [Float!]
+  share_not_in: [Float!]
+  share_lt: Float
+  share_lte: Float
+  share_gt: Float
+  share_gte: Float
+  user: UserWhereInput
+  expense: ExpenseWhereInput
+}
+
+input ExpenseShareWhereUniqueInput {
+  id: ID
 }
 
 type ExpenseSubscriptionPayload {
@@ -262,9 +318,8 @@ input ExpenseSubscriptionWhereInput {
 input ExpenseUpdateInput {
   amount: Int
   description: String
-  perPerson: Int
   paidBy: UserUpdateOneWithoutExpensesPaidInput
-  participants: Expense_ShareUpdateManyWithoutExpenseInput
+  participants: ExpenseShareUpdateManyWithoutExpenseInput
   group: GroupUpdateOneWithoutExpensesInput
 }
 
@@ -298,9 +353,8 @@ input ExpenseUpdateOneWithoutParticipantsInput {
 input ExpenseUpdateWithoutGroupDataInput {
   amount: Int
   description: String
-  perPerson: Int
   paidBy: UserUpdateOneWithoutExpensesPaidInput
-  participants: Expense_ShareUpdateManyWithoutExpenseInput
+  participants: ExpenseShareUpdateManyWithoutExpenseInput
 }
 
 input ExpenseUpdateWithoutGroupInput {
@@ -311,8 +365,7 @@ input ExpenseUpdateWithoutGroupInput {
 input ExpenseUpdateWithoutPaidByDataInput {
   amount: Int
   description: String
-  perPerson: Int
-  participants: Expense_ShareUpdateManyWithoutExpenseInput
+  participants: ExpenseShareUpdateManyWithoutExpenseInput
   group: GroupUpdateOneWithoutExpensesInput
 }
 
@@ -324,7 +377,6 @@ input ExpenseUpdateWithoutPaidByInput {
 input ExpenseUpdateWithoutParticipantsDataInput {
   amount: Int
   description: String
-  perPerson: Int
   paidBy: UserUpdateOneWithoutExpensesPaidInput
   group: GroupUpdateOneWithoutExpensesInput
 }
@@ -391,18 +443,10 @@ input ExpenseWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
-  perPerson: Int
-  perPerson_not: Int
-  perPerson_in: [Int!]
-  perPerson_not_in: [Int!]
-  perPerson_lt: Int
-  perPerson_lte: Int
-  perPerson_gt: Int
-  perPerson_gte: Int
   paidBy: UserWhereInput
-  participants_every: Expense_ShareWhereInput
-  participants_some: Expense_ShareWhereInput
-  participants_none: Expense_ShareWhereInput
+  participants_every: ExpenseShareWhereInput
+  participants_some: ExpenseShareWhereInput
+  participants_none: ExpenseShareWhereInput
   group: GroupWhereInput
 }
 
@@ -629,24 +673,27 @@ type Mutation {
   createUser(data: UserCreateInput!): User!
   createGroup(data: GroupCreateInput!): Group!
   createExpense(data: ExpenseCreateInput!): Expense!
-  createExpense_Share(data: Expense_ShareCreateInput!): Expense_Share!
+  createExpenseShare(data: ExpenseShareCreateInput!): ExpenseShare!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): Group
   updateExpense(data: ExpenseUpdateInput!, where: ExpenseWhereUniqueInput!): Expense
+  updateExpenseShare(data: ExpenseShareUpdateInput!, where: ExpenseShareWhereUniqueInput!): ExpenseShare
   deleteUser(where: UserWhereUniqueInput!): User
   deleteGroup(where: GroupWhereUniqueInput!): Group
   deleteExpense(where: ExpenseWhereUniqueInput!): Expense
+  deleteExpenseShare(where: ExpenseShareWhereUniqueInput!): ExpenseShare
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertGroup(where: GroupWhereUniqueInput!, create: GroupCreateInput!, update: GroupUpdateInput!): Group!
   upsertExpense(where: ExpenseWhereUniqueInput!, create: ExpenseCreateInput!, update: ExpenseUpdateInput!): Expense!
+  upsertExpenseShare(where: ExpenseShareWhereUniqueInput!, create: ExpenseShareCreateInput!, update: ExpenseShareUpdateInput!): ExpenseShare!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput!): BatchPayload!
   updateManyGroups(data: GroupUpdateInput!, where: GroupWhereInput!): BatchPayload!
   updateManyExpenses(data: ExpenseUpdateInput!, where: ExpenseWhereInput!): BatchPayload!
-  updateManyExpense_Shares(data: Expense_ShareUpdateInput!, where: Expense_ShareWhereInput!): BatchPayload!
+  updateManyExpenseShares(data: ExpenseShareUpdateInput!, where: ExpenseShareWhereInput!): BatchPayload!
   deleteManyUsers(where: UserWhereInput!): BatchPayload!
   deleteManyGroups(where: GroupWhereInput!): BatchPayload!
   deleteManyExpenses(where: ExpenseWhereInput!): BatchPayload!
-  deleteManyExpense_Shares(where: Expense_ShareWhereInput!): BatchPayload!
+  deleteManyExpenseShares(where: ExpenseShareWhereInput!): BatchPayload!
 }
 
 enum MutationType {
@@ -670,14 +717,15 @@ type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
   expenses(where: ExpenseWhereInput, orderBy: ExpenseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Expense]!
-  expense_Shares(where: Expense_ShareWhereInput, orderBy: Expense_ShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Expense_Share]!
+  expenseShares(where: ExpenseShareWhereInput, orderBy: ExpenseShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ExpenseShare]!
   user(where: UserWhereUniqueInput!): User
   group(where: GroupWhereUniqueInput!): Group
   expense(where: ExpenseWhereUniqueInput!): Expense
+  expenseShare(where: ExpenseShareWhereUniqueInput!): ExpenseShare
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
   expensesConnection(where: ExpenseWhereInput, orderBy: ExpenseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExpenseConnection!
-  expense_SharesConnection(where: Expense_ShareWhereInput, orderBy: Expense_ShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): Expense_ShareConnection!
+  expenseSharesConnection(where: ExpenseShareWhereInput, orderBy: ExpenseShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExpenseShareConnection!
   node(id: ID!): Node
 }
 
@@ -685,7 +733,7 @@ type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
   expense(where: ExpenseSubscriptionWhereInput): ExpenseSubscriptionPayload
-  expense_Share(where: Expense_ShareSubscriptionWhereInput): Expense_ShareSubscriptionPayload
+  expenseShare(where: ExpenseShareSubscriptionWhereInput): ExpenseShareSubscriptionPayload
 }
 
 type UserConnection {
@@ -701,7 +749,7 @@ input UserCreateInput {
   groups: GroupCreateManyWithoutUsersInput
   groupsCreated: GroupCreateManyWithoutCreatedByInput
   expensesPaid: ExpenseCreateManyWithoutPaidByInput
-  expensesShared: Expense_ShareCreateManyWithoutUserInput
+  expensesShared: ExpenseShareCreateManyWithoutUserInput
 }
 
 input UserCreateManyWithoutGroupsInput {
@@ -730,7 +778,7 @@ input UserCreateWithoutExpensesPaidInput {
   password: String!
   groups: GroupCreateManyWithoutUsersInput
   groupsCreated: GroupCreateManyWithoutCreatedByInput
-  expensesShared: Expense_ShareCreateManyWithoutUserInput
+  expensesShared: ExpenseShareCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutExpensesSharedInput {
@@ -748,7 +796,7 @@ input UserCreateWithoutGroupsCreatedInput {
   password: String!
   groups: GroupCreateManyWithoutUsersInput
   expensesPaid: ExpenseCreateManyWithoutPaidByInput
-  expensesShared: Expense_ShareCreateManyWithoutUserInput
+  expensesShared: ExpenseShareCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutGroupsInput {
@@ -757,7 +805,7 @@ input UserCreateWithoutGroupsInput {
   password: String!
   groupsCreated: GroupCreateManyWithoutCreatedByInput
   expensesPaid: ExpenseCreateManyWithoutPaidByInput
-  expensesShared: Expense_ShareCreateManyWithoutUserInput
+  expensesShared: ExpenseShareCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -811,7 +859,7 @@ input UserUpdateInput {
   groups: GroupUpdateManyWithoutUsersInput
   groupsCreated: GroupUpdateManyWithoutCreatedByInput
   expensesPaid: ExpenseUpdateManyWithoutPaidByInput
-  expensesShared: Expense_ShareUpdateManyWithoutUserInput
+  expensesShared: ExpenseShareUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyWithoutGroupsInput {
@@ -856,7 +904,7 @@ input UserUpdateWithoutExpensesPaidDataInput {
   password: String
   groups: GroupUpdateManyWithoutUsersInput
   groupsCreated: GroupUpdateManyWithoutCreatedByInput
-  expensesShared: Expense_ShareUpdateManyWithoutUserInput
+  expensesShared: ExpenseShareUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutExpensesPaidInput {
@@ -884,7 +932,7 @@ input UserUpdateWithoutGroupsCreatedDataInput {
   password: String
   groups: GroupUpdateManyWithoutUsersInput
   expensesPaid: ExpenseUpdateManyWithoutPaidByInput
-  expensesShared: Expense_ShareUpdateManyWithoutUserInput
+  expensesShared: ExpenseShareUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutGroupsCreatedInput {
@@ -898,7 +946,7 @@ input UserUpdateWithoutGroupsDataInput {
   password: String
   groupsCreated: GroupUpdateManyWithoutCreatedByInput
   expensesPaid: ExpenseUpdateManyWithoutPaidByInput
-  expensesShared: Expense_ShareUpdateManyWithoutUserInput
+  expensesShared: ExpenseShareUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutGroupsInput {
@@ -998,9 +1046,9 @@ input UserWhereInput {
   expensesPaid_every: ExpenseWhereInput
   expensesPaid_some: ExpenseWhereInput
   expensesPaid_none: ExpenseWhereInput
-  expensesShared_every: Expense_ShareWhereInput
-  expensesShared_some: Expense_ShareWhereInput
-  expensesShared_none: Expense_ShareWhereInput
+  expensesShared_every: ExpenseShareWhereInput
+  expensesShared_some: ExpenseShareWhereInput
+  expensesShared_none: ExpenseShareWhereInput
 }
 
 input UserWhereUniqueInput {
