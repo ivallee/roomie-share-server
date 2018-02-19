@@ -1,41 +1,4 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
-const { APP_SECRET, getUserId } = require('../utils');
-
-async function signup(parent, args, ctx, info) {
-  const password = await bcrypt.hash(args.password, 10);
-  const user = await ctx.db.mutation.createUser({
-    data: { ...args, password }
-  });
-
-  const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
-
-  return {
-    token,
-    user
-  }
-}
-
-async function login(parent, args, ctx, info) {
-  const user = await ctx.db.query.user({ where: { email: args.email } });
-
-  if (!user) {
-    throw new Error(`Could not find a user with email: ${args.email}`);
-  }
-
-  const valid = await bcrypt.compare(args.password, user.password);
-  if (!valid) {
-    throw new Error('Invalid login');
-  }
-
-  const token = jwt.sign({ userId: user.id }, APP_SECRET);
-
-  return {
-    token,
-    user,
-  }
-}
+const { getUserId } = require('../../utils');
 
 function newGroup(parent, args, ctx, info) {
   const { name } = args;
@@ -56,7 +19,7 @@ async function addToGroup(parent, args, ctx, info) {
   const { email, groupId } = args;
   // TODO Change this system
   const authorized = getUserId(ctx);
-  const user = await ctx.db.query.user({ where: { email }}, '{id groups { id }}' );
+  const user = await ctx.db.query.user({ where: { email } }, '{id groups { id }}');
   const groupExists = await ctx.db.exists.Group({ id: groupId });
 
   if (!user) {
@@ -84,17 +47,16 @@ async function removeFromGroup(parent, args, ctx, info) {
   const { email, groupId } = args;
   // TODO Change this system
   const userId = getUserId(ctx);
-  const group = await ctx.db.exists.Group({ 
+  const group = await ctx.db.exists.Group({
     id: groupId,
-    createdBy: { 
+    createdBy: {
       id: userId
-     }
+    }
   });
 
   // TODO
   // add check to see if user is settled up before being able to leave
 
-  // verify that user is group creator
   if (!group) {
     throw new Error('Only group creators may remove users');
   }
@@ -128,8 +90,6 @@ async function leaveGroup(parent, args, ctx, info) {
 }
 
 module.exports = {
-  signup,
-  login,
   newGroup,
   addToGroup,
   removeFromGroup,

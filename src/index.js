@@ -5,7 +5,7 @@ const { Prisma } = require('prisma-binding');
 
 // import Resolvers
 const Query = require('./resolvers/Query');
-const Mutation = require('./resolvers/Mutation');
+const Mutation = require('./resolvers/mutations/Mutation');
 
 const resolvers = {
   Query,
