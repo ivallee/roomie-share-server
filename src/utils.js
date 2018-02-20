@@ -19,9 +19,20 @@ const calculatePerPerson = (expense, shares) => {
   return expense / sum;
 };
 
+const validateGroupMembership = async function(context, userId, groupId) {
+  isValid = await context.db.exists.Group({
+    id: groupId,
+    users_some: {
+      id: userId
+    }
+  });
+  return isValid
+};
+
 
 module.exports = {
   APP_SECRET,
   validateUser,
-  calculatePerPerson
+  calculatePerPerson,
+  validateGroupMembership
 }

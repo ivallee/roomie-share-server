@@ -1,16 +1,11 @@
-const { validateUser, calculatePerPerson } = require('../../utils');
+const { validateUser, calculatePerPerson, validateGroupMembership } = require('../../utils');
 
 async function newExpense(parent, args, ctx, info) {
   const { groupId, amount, description, participants } = args;
   const userId = validateUser(ctx);
   const participantShares = [];
 
-  const validateCreator = await ctx.db.exists.Group({
-    id: groupId,
-    users_some: {
-      id: userId
-    }
-  });
+  const validateCreator = await validateGroupMembership(ctx, userId, groupId);
 
   if (!validateCreator) {
     throw new Error('You cannot add expenses to a group you do not belong to.');
