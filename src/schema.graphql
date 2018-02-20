@@ -1,3 +1,4 @@
+# import ExpenseShare from './generated/prisma.graphql'
 
 type Query {
   # do I need these?
@@ -18,7 +19,7 @@ type Mutation {
     groupId: String!
     amount: Int! 
     description: String!
-    # sharedBy: [User!]!
+    participants: [String!]!
     ): Expense!
 }
 
@@ -38,6 +39,7 @@ type Group {
   id: ID!
   name: String!
   users: [User!]!
+  expenses: [Expense!]!
   createdBy: User!
 }
 
@@ -45,7 +47,7 @@ type Expense {
   id: ID!
   amount: Int!
   description: String!
-  postedBy: User!
-  # sharedBy: [User!]!
+  paidBy: User!
+  perPerson: Float!
   group: Group!
 }
