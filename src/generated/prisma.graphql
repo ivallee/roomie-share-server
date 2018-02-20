@@ -12,6 +12,7 @@ type Expense implements Node {
   paidBy(where: UserWhereInput): User!
   participants(where: ExpenseShareWhereInput, orderBy: ExpenseShareOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ExpenseShare!]
   group(where: GroupWhereInput): Group!
+  perPerson: Float!
 }
 
 type ExpenseShare implements Node {
@@ -74,6 +75,7 @@ type ExpenseConnection {
 input ExpenseCreateInput {
   amount: Int!
   description: String!
+  perPerson: Float!
   paidBy: UserCreateOneWithoutExpensesPaidInput!
   participants: ExpenseShareCreateManyWithoutExpenseInput
   group: GroupCreateOneWithoutExpensesInput!
@@ -97,6 +99,7 @@ input ExpenseCreateOneWithoutParticipantsInput {
 input ExpenseCreateWithoutGroupInput {
   amount: Int!
   description: String!
+  perPerson: Float!
   paidBy: UserCreateOneWithoutExpensesPaidInput!
   participants: ExpenseShareCreateManyWithoutExpenseInput
 }
@@ -104,6 +107,7 @@ input ExpenseCreateWithoutGroupInput {
 input ExpenseCreateWithoutPaidByInput {
   amount: Int!
   description: String!
+  perPerson: Float!
   participants: ExpenseShareCreateManyWithoutExpenseInput
   group: GroupCreateOneWithoutExpensesInput!
 }
@@ -111,6 +115,7 @@ input ExpenseCreateWithoutPaidByInput {
 input ExpenseCreateWithoutParticipantsInput {
   amount: Int!
   description: String!
+  perPerson: Float!
   paidBy: UserCreateOneWithoutExpensesPaidInput!
   group: GroupCreateOneWithoutExpensesInput!
 }
@@ -127,6 +132,8 @@ enum ExpenseOrderByInput {
   amount_DESC
   description_ASC
   description_DESC
+  perPerson_ASC
+  perPerson_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -137,6 +144,7 @@ type ExpensePreviousValues {
   id: ID!
   amount: Int!
   description: String!
+  perPerson: Float!
 }
 
 type ExpenseShareConnection {
@@ -318,6 +326,7 @@ input ExpenseSubscriptionWhereInput {
 input ExpenseUpdateInput {
   amount: Int
   description: String
+  perPerson: Float
   paidBy: UserUpdateOneWithoutExpensesPaidInput
   participants: ExpenseShareUpdateManyWithoutExpenseInput
   group: GroupUpdateOneWithoutExpensesInput
@@ -353,6 +362,7 @@ input ExpenseUpdateOneWithoutParticipantsInput {
 input ExpenseUpdateWithoutGroupDataInput {
   amount: Int
   description: String
+  perPerson: Float
   paidBy: UserUpdateOneWithoutExpensesPaidInput
   participants: ExpenseShareUpdateManyWithoutExpenseInput
 }
@@ -365,6 +375,7 @@ input ExpenseUpdateWithoutGroupInput {
 input ExpenseUpdateWithoutPaidByDataInput {
   amount: Int
   description: String
+  perPerson: Float
   participants: ExpenseShareUpdateManyWithoutExpenseInput
   group: GroupUpdateOneWithoutExpensesInput
 }
@@ -377,6 +388,7 @@ input ExpenseUpdateWithoutPaidByInput {
 input ExpenseUpdateWithoutParticipantsDataInput {
   amount: Int
   description: String
+  perPerson: Float
   paidBy: UserUpdateOneWithoutExpensesPaidInput
   group: GroupUpdateOneWithoutExpensesInput
 }
@@ -443,6 +455,14 @@ input ExpenseWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  perPerson: Float
+  perPerson_not: Float
+  perPerson_in: [Float!]
+  perPerson_not_in: [Float!]
+  perPerson_lt: Float
+  perPerson_lte: Float
+  perPerson_gt: Float
+  perPerson_gte: Float
   paidBy: UserWhereInput
   participants_every: ExpenseShareWhereInput
   participants_some: ExpenseShareWhereInput

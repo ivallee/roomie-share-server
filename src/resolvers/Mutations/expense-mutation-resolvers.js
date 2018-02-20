@@ -1,4 +1,4 @@
-const { validateUser } = require('../../utils');
+const { validateUser, calculatePerPerson } = require('../../utils');
 
 async function newExpense(parent, args, ctx, info) {
   const { groupId, amount, description, participants } = args;
@@ -6,26 +6,34 @@ async function newExpense(parent, args, ctx, info) {
   // const group = await ctx.db.query.group({ where: { id: groupId } });
   console.log('PARTICIPANTS!!!!! ', participants);
 
-  const participantShares = participants.map((p) => {
+  const participantShares = [];
+  
+  const newParticipants = participants.map((p) => {
+    participantShares.push(p.share);
     return { 
       share: p.share,
-      userId: { connect: { id: p.user } } }
+      user: { connect: { id: p.userId } } }
   });
+  
+  console.log('USSEEERRRRRRRRRRRRRR ', userId);
+  const  perPerson  = calculatePerPerson(amount, participantShares);
+  console.log("PERRRRRR RPEEEEERRRRSONNNNN ", perPerson, typeof perPerson)
 
-  console.log('EXPENSESHAREEEEEEEE ', participantShares);
-    
+  
   return ctx.db.mutation.createExpense({
-      data: {
+    // where: { id: groupId },
+    data: {
         amount,
         description,
         paidBy: { connect: { id: userId } },
         group: { connect: { id: groupId } },
-        participants: { create: participantShares }
+        participants: { create:  newParticipants  },
+        perPerson
         // sharedBy: { connect: sharedBy }
       }
     },
       info
-    );
+    )
   
 }
 

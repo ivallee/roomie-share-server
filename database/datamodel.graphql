@@ -24,6 +24,7 @@ type Expense {
   paidBy: User! @relation(name: "ExpensePayer")
   participants: [ExpenseShare!]!
   group: Group!
+  perPerson: Float!
 }
 
 type ExpenseShare {
