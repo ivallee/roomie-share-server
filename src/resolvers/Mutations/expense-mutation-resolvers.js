@@ -3,37 +3,35 @@ const { validateUser } = require('../../utils');
 async function newExpense(parent, args, ctx, info) {
   const { groupId, amount, description, participants } = args;
   const userId = validateUser(ctx);
-  const group = await ctx.db.query.group({ where: { id: groupId } });
+  // const group = await ctx.db.query.group({ where: { id: groupId } });
+  console.log('PARTICIPANTS!!!!! ', participants);
 
-  const expenseShares = await participants.shares.forEach((user) => {
-    return ctx.db.mutation.createExpenseShare({
+  const participantShares = participants.map((p) => {
+    return { 
+      share: p.share,
+      userId: { connect: { id: p.user } } }
+  });
+
+  console.log('EXPENSESHAREEEEEEEE ', participantShares);
+    
+  return ctx.db.mutation.createExpense({
       data: {
-        groupId,
-        expenseId: user.userId,
-        share: user.share
+        amount,
+        description,
+        paidBy: { connect: { id: userId } },
+        group: { connect: { id: groupId } },
+        participants: { create: participantShares }
+        // sharedBy: { connect: sharedBy }
       }
     },
       info
-    )
-  });
-  console.log(espenseShares);
+    );
+  
 }
 
 
 
-  
-//   return ctx.db.mutation.createExpense({
-//     data: {
-//       amount,
-//       description,
-//       postedBy: { connect: { id: userId } },
-//       group: { connect: { id: groupId } }
-//       // sharedBy: { connect: sharedBy }
-//     }
-//   },
-//     info
-//   )
-// }
+
 
 
 // INCOMING EXPENSE RESOLVER
