@@ -2,7 +2,7 @@ require('dotenv').config();
 const APP_SECRET = process.env.APP_SECRET;
 const jwt = require('jsonwebtoken');
 
-function validateUser(context) {
+const validateUser = (context) => {
   const Authorization = context.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
@@ -11,9 +11,17 @@ function validateUser(context) {
   }
 
   throw new Error('Not authenticated');
-}
+};
+
+const calculatePerPerson = (expense, shares) => {
+  const sum = shares.reduce((acc, curr) => acc + curr);
+
+  return expense / sum;
+};
+
 
 module.exports = {
   APP_SECRET,
-  validateUser
+  validateUser,
+  calculatePerPerson
 }
