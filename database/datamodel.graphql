@@ -28,8 +28,8 @@ type Expense {
 
 type ExpenseShare {
   id: ID! @unique
-  userId: User!
-  expenseId: Expense!
+  user: User!
+  expense: Expense
   share: Float!
 }
 

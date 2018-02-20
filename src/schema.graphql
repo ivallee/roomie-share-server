@@ -19,8 +19,13 @@ type Mutation {
     groupId: String!
     amount: Int! 
     description: String!
-    participants: [String!]!
+    participants: [ExpenseParticipantInput!]!
     ): Expense!
+}
+
+input ExpenseParticipantInput {
+  share: Float!
+  userId: String!
 }
 
 type AuthPayload {
