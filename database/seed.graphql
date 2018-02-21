@@ -1,23 +1,34 @@
 mutation {
   Isaac: createUser(data: {
-    name: "Walker"
-    email: "walker@example.com"
-    password: "1234"
+    name: "Isaac"
+    email: "isaac@example.com"
+    password: "$2a$10$TZMlHyqyzkphJYbapegLROt6u2dh1gTTtJmuDSmDVq1q6kT.1wBu6"
   }) {
     id
   }
   Devon: createUser(data: {
     name: "Catherine"
     email: "catherine@example.com"
-    password: "1234"
+    password: "$2a$10$VoxoGnYyXjDXM5OeAtx0VuG43261qBqiKJgUVsuKsigJqqnZYnRCO"
   }) {
     id
   }
   Catherine: createUser(data: {
     name: "devon"
     email: "devon@example.com"
-    password: "1234"
+    password: "$2a$10$kT7LtvRUFPd9UMS5Pbx6f.Omv/2NauPXKEL/R2iQ8dECfQoPHB7Oe"
   }) {
+    id
+  }
+  BrownHen: createGroup(data: {
+    name: "brownHen"
+    users: { connect: [
+      {email: "isaac@example.com"}
+      {email: "catherine@example.com"}
+      {email: "devon@example.com"}
+    ] }
+    createdBy: {connect: {email: "isaac@example.com"}}
+  }){
     id
   }
 }
