@@ -11,6 +11,12 @@ async function newExpense(parent, args, ctx, info) {
     throw new Error('You cannot add expenses to a group you do not belong to.');
   }
 
+  for (let p of participants) {
+    const validateParticipant = await validateGroupMembership(ctx, p.userId, groupId);
+    if (!validateParticipant) {
+      throw new Error(`User ${p.userId} is not a member of this group`)
+    }
+  }
 
   const newParticipants = participants.map((p) => {
     participantShares.push(p.share);
