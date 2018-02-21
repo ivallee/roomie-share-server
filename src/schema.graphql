@@ -6,6 +6,7 @@ type Query {
   allGroups: [Group!]!
   getUserById(userId: String!): User!
   getUserByEmail(email: String!): User!
+  getGroupBalance(userId: String! groupId: Group!): GroupBalance!
 }
 
 type Mutation {
@@ -33,11 +34,21 @@ type AuthPayload {
   user: User
 }
 
+type GroupBalance {
+  user: User!
+  group: Group!
+  totalPaid: Int!
+  totalOwed: Int!
+  # Balance? probs client side
+  # related expenses? probably
+}
+
 type User {
   id: ID!
   name: String!
   email: String!
   groups: [Group!]!
+  groupBalances: [GroupBalance!]!
 }
 
 type Group {
@@ -46,6 +57,7 @@ type Group {
   users: [User!]!
   expenses: [Expense!]!
   createdBy: User!
+  groupBalances: [GroupBalance!]!
 }
 
 type Expense {
