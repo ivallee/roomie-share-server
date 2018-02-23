@@ -6,7 +6,7 @@ type Query {
   allGroups: [Group!]!
   getUserById(userId: String!): User!
   getUserByEmail(email: String!): User!
-  balance(userId: String! groupId: String!): GroupBalance!
+  balance(groupId: String!): GroupBalance!
 }
 
 type Mutation {

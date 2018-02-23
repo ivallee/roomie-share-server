@@ -1,6 +1,48 @@
 const { validateUser, validateGroupMembership } = require('../../utils');
 
 async function balance(parent, args, ctx, info) {
+  const { groupId } = args;
+  const userId = validateUser(ctx);
+
+  const expenses = await ctx.db.query.expenses({
+    where: {
+      group: { id: groupId }
+    }
+  }, `{ 
+        id 
+        description
+        amount
+        perPerson
+        paidBy {
+          id
+          name
+        } 
+        participants {
+          user {
+            name 
+            id
+          }
+          share 
+        } 
+      }`
+    );
+
+  const totalPaid = expenses.forEach((e) => {
+    if (e.paidBy.id === userId) {
+      console.log('IDDDDDS ', e.paidBy.id, userId)
+      return e.amount
+    }
+  })
+  console.log('DAATTTAAAAAA', expenses[0].participants, expenses[0].paidBy);
+  console.log("AAAAAMAOUUUUNT ", totalPaid )
+
+  // figure out which ones user paid for
+
+  // function to calculate total paid
+
+  // function to calculate total owed
+
+  // TODO: add check to see if expense has been "paid"
 
 
   return {
