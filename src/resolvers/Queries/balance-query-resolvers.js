@@ -1,9 +1,16 @@
 const { validateUser, validateGroupMembership } = require('../../utils');
 
-async function balanceQuery(parent, args, ctx, info) {
+async function balance(parent, args, ctx, info) {
 
+
+  return {
+    // userId
+    // group
+    // total paid
+    // total owed
+  }
 }
 
 module.exports = {
-  balanceQuery
+  balance
 }

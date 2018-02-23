@@ -1,4 +1,4 @@
-const balanceMutations = require('balance-query-resolvers');
+const balanceMutations = require('./balance-query-resolvers');
 
 function allUsers(parent, args, ctx, info) {
   return ctx.db.query.users({}, info);
