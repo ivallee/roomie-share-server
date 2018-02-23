@@ -20,11 +20,82 @@ mutation {
   }) {
     id
   }
+  Walker: createUser(data: {
+    name: "Walker"
+    email: "walker@example.com"
+    password: "$2a$10$MwesZ9mj04ZJM3srZdRIC.wWaMb8GUqSTJfL9t62pJsaDCYiKV3BS"
+  }) {
+    id
+  }
+  Andy: createUser(data: {
+    name: "Andy"
+    email: "andy@example.com"
+    password: "$2a$10$1NypuiQhskJHvlBLkqjEJ.pkkokrzv/iqyO1kGaAl89G2dJR1/ivS"
+  }) {
+    id
+  }
+  Logan: createUser(data: {
+    name: "Logan"
+    email: "logan@example.com"
+    password: "$2a$10$Tr.mAqrxKCA6WIY4CpumjOn9CJQTE0WzAOjDfdEiYPK4pyer9YFlO"
+  }) {
+    id
+  }
+  Michael: createUser(data: {
+    name: "Michael"
+    email: "michael@example.com"
+    password: "$2a$10$MSEe.QhNwdD1RSbsypIriesXrz5trt8RPFg3mJpJfPFmR8fMg/tUi"
+  }) {
+    id
+  }
   BrownHen: createGroup(data: {
     name: "brownHen"
     users: { connect: [
       {email: "isaac@example.com"}
       {email: "catherine@example.com"}
+      {email: "devon@example.com"}
+    ] }
+    createdBy: {connect: {email: "isaac@example.com"}}
+  }){
+    id
+  }
+  LittleManBigMan: createGroup(data: {
+    name: "LittleMan-Bigman"
+    users: { connect: [
+      {email: "walker@example.com"}
+      {email: "andy@example.com"}
+    ] }
+    createdBy: {connect: {email: "walker@example.com"}}
+  }){
+    id
+  }
+  DosaBoys: createGroup(data: {
+    name: "da dosa boyz"
+    users: { connect: [
+      {email: "logan@example.com"}
+      {email: "michael@example.com"}
+    ] }
+    createdBy: {connect: {email: "logan@example.com"}}
+  }){
+    id
+  }
+  DosaClub: createGroup(data: {
+    name: "Dosa club!"
+    users: { connect: [
+      {email: "isaac@example.com"}
+      {email: "logan@example.com"}
+      {email: "devon@example.com"}
+      {email: "michael@example.com"}
+    ] }
+    createdBy: {connect: {email: "devon@example.com"}}
+  }){
+    id
+  }
+  Redwoods: createGroup(data: {
+    name: "Redwood Cru"
+    users: { connect: [
+      {email: "isaac@example.com"}
+      {email: "walker@example.com"}
       {email: "devon@example.com"}
     ] }
     createdBy: {connect: {email: "isaac@example.com"}}
