@@ -27,18 +27,27 @@ async function balance(parent, args, ctx, info) {
       }`
     );
 
-  const totalPaid = [];
+  let totalPaid = [];
+  let totalOwed = 0;
   expenses.forEach((e) => {
     if (e.paidBy.id === userId) {
       totalPaid.push(e.amount);
     }
+    
+    e.participants.forEach((p) => {
+      if (p.user.id === userId) {
+        const sumProduct = p.share * e.perPerson;
+        console.log(sumProduct);
+        totalOwed += sumProduct;
+      }
+    });
   });
   totalPaid = totalPaid.reduce((acc, curr) => acc + curr);
 
-  
+
 
   console.log('DAATTTAAAAAA', expenses[0].participants, expenses[0].paidBy);
-  console.log("AAAAAMAOUUUUNT ", totalPaid.reduce((acc, curr) => acc + curr) )
+  console.log("AAAAAMAOUUUUNT ", totalPaid, totalOwed)
 
   // figure out which ones user paid for
 
