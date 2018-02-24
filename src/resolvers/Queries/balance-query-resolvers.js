@@ -55,14 +55,13 @@ async function balance(parent, args, ctx, info) {
 
   // function to calculate total owed
 
-  // TODO: add check to see if expense has been "paid"
+  // TODO: add check to see if expense has been "paid"?
 
 
   return {
-    // userId
-    // group
-    // total paid
-    // total owed
+    totalPaid,
+    totalOwed,
+    balance: totalPaid - totalOwed
   }
 }
 
