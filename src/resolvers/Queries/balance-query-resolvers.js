@@ -27,14 +27,18 @@ async function balance(parent, args, ctx, info) {
       }`
     );
 
-  const totalPaid = expenses.forEach((e) => {
+  const totalPaid = [];
+  expenses.forEach((e) => {
     if (e.paidBy.id === userId) {
-      console.log('IDDDDDS ', e.paidBy.id, userId)
-      return e.amount
+      totalPaid.push(e.amount);
     }
-  })
+  });
+  totalPaid = totalPaid.reduce((acc, curr) => acc + curr);
+
+  
+
   console.log('DAATTTAAAAAA', expenses[0].participants, expenses[0].paidBy);
-  console.log("AAAAAMAOUUUUNT ", totalPaid )
+  console.log("AAAAAMAOUUUUNT ", totalPaid.reduce((acc, curr) => acc + curr) )
 
   // figure out which ones user paid for
 
