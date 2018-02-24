@@ -37,6 +37,7 @@ type AuthPayload {
 type GroupBalance {
   # user: User!
   # group: Group!
+  userId: String!
   totalPaid: Int!
   totalOwed: Int!
   balance: Int!
